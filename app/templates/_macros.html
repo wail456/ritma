@@ -1,0 +1,11 @@
+{# Satu field formulir: label, input, dan pesan error di bawahnya. #}
+{% macro field(f, hint=None) %}
+  <div class="field{% if f.errors %} has-error{% endif %}">
+    {{ f.label }}
+    {{ f(**kwargs) }}
+    {% if hint %}<p class="hint">{{ hint }}</p>{% endif %}
+    {% for message in f.errors %}
+      <p class="error" role="alert">{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endmacro %}

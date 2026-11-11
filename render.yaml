@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: ritma
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # Free plan tidak punya preDeployCommand, jadi migrasi dijalankan sebelum server start.
+    startCommand: flask --app run db upgrade && gunicorn run:app --bind 0.0.0.0:$PORT --workers 2
+    healthCheckPath: /healthz
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false        # tempel connection string Neon di dashboard Render
+      - key: APP_TZ
+        value: Asia/Jakarta

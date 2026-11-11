@@ -1,0 +1,29 @@
+{# Peta aktivitas. Variabel: hm (Heatmap). `oob` dan `fresh` dipasang saat respons HTMX. #}
+<section id="heatmap" class="heatmap-card" aria-labelledby="heatmap-title"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <div class="card-head">
+    <h2 id="heatmap-title">Konsistensi setahun</h2>
+    <div class="legend" aria-hidden="true">
+      Sedikit
+      <span class="heatmap-cell" data-level="0"></span><span class="heatmap-cell" data-level="1"></span><span class="heatmap-cell" data-level="2"></span><span class="heatmap-cell" data-level="3"></span>
+      Banyak
+    </div>
+  </div>
+
+  <div class="heatmap-scroll" tabindex="0" role="group" aria-label="Peta aktivitas 53 minggu terakhir. Arahkan kursor ke kotak untuk melihat rinciannya.">
+    <div class="heatmap-body">
+      <div class="months" aria-hidden="true">
+        {% for label in hm.month_labels %}<span>{{ label }}</span>{% endfor %}
+      </div>
+      <div class="weekdays" aria-hidden="true">
+        <span>Sen</span><span></span><span>Rab</span><span></span><span>Jum</span><span></span><span></span>
+      </div>
+      <div class="cells" aria-hidden="true">
+        {% for column in hm.weeks %}{% for c in column %}<span class="heatmap-cell" data-level="{{ c.level }}"
+          {%- if c.empty %} data-empty{% endif %}
+          {%- if c.future %} data-future{% endif %}
+          {%- if c.is_today %} data-today{% if fresh %} data-pulse{% endif %}{% endif %}
+          {%- if not c.future %} title="{{ c.day|short_date }}: {% if c.total %}{{ c.done }} dari {{ c.total }} habit selesai{% else %}belum ada habit{% endif %}"{% endif %}></span>{% endfor %}{% endfor %}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Habit diarsipkan{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="page">
+    <a class="back" href="{{ url_for('main.dashboard') }}">&larr; Kembali ke hari ini</a>
+    <h1>Habit diarsipkan</h1>
+
+    {% if habits %}
+      <p class="lede">Habit di sini tidak tampil di checklist dan tidak dihitung di statistik. Riwayatnya tetap ada dan ikut terekspor.</p>
+      <ul class="row-list">
+        {% for habit in habits %}
+          <li>
+            <div class="habit-text">
+              <p class="habit-name">{{ habit.name }}</p>
+              <p class="habit-meta"><span class="tag">{{ habit.category|cat_label }}</span>{{ habit.description or '' }}</p>
+            </div>
+            <form method="post" action="{{ url_for('habits.restore', habit_id=habit.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-outline btn-sm">Aktifkan kembali</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="lede">Belum ada habit yang diarsipkan.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

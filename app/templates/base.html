@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ritma{% endblock %} – Habit Tracker Harian</title>
+  <meta name="description" content="Ritma: Bangun kebiasaan kecil, ciptakan perubahan besar. Habit tracker harian yang bersih dan fokus pada konsistensi.">
+  <meta name="theme-color" content="#FAFAF7">
+  <meta name="htmx-config" content='{"allowEval": false, "includeIndicatorStyles": false}'>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232D5A27'/%3E%3Cpath d='M8 16.5l5.5 5.5L24 10.5' fill='none' stroke='%23FAFAF7' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="{{ url_for('static', filename='fonts/hanken-grotesk-latin-wght-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <script src="{{ url_for('static', filename='js/htmx.min.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+{# hx-headers: token CSRF ikut di setiap request HTMX, tanpa ini centang ditolak server (400). #}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+  <a class="skip-link" href="#main">Lewati ke konten</a>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="{{ url_for('main.landing') }}" class="brand-logo">
+        <span class="logo-icon" aria-hidden="true">🌿</span>
+        <span class="brand-title">Ritma</span>
+        <span class="brand-subtitle">Habit Tracker Harian</span>
+      </a>
+      <nav class="nav-links" aria-label="Menu utama">
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('main.dashboard') }}" class="btn btn-text">Dashboard</a>
+          <a href="{{ url_for('habits.index') }}" class="btn btn-text">Kebiasaan Saya</a>
+          <a href="{{ url_for('habits.archived') }}" class="btn btn-text">Arsip</a>
+          {# Logout wajib POST (+CSRF), jadi bukan link biasa. #}
+          <form method="post" action="{{ url_for('auth.logout') }}" class="nav-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-outline">Keluar</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-text">Masuk</a>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Mulai Gratis</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content" id="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container flashes" role="status">
+          {% for category, message in messages %}
+            <p class="alert alert-{{ category }}">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Ritma – Habit Tracker Harian. Bangun kebiasaan kecil, ciptakan perubahan besar.</p>
+    </div>
+  </footer>
+
+  {# Pengganti window.confirm(): dibuka oleh app.js untuk form[data-confirm]. #}
+  <dialog id="confirm-dialog" class="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="stack">
+      <h2 id="confirm-title">Arsipkan habit?</h2>
+      <p id="confirm-message" class="confirm-message"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-outline" data-confirm-cancel autofocus>Batal</button>
+        <button type="button" class="btn btn-danger-solid" data-confirm-ok>Arsipkan</button>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

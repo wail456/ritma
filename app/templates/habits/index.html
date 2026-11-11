@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Kebiasaan saya{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="page page--wide">
+    <h1>Kebiasaan saya</h1>
+    <p class="lede">{{ habits|length }} dari {{ limit }} habit aktif. Untuk mencentang habit hari ini, buka <a href="{{ url_for('main.dashboard') }}">Dashboard</a>.</p>
+
+    {% if habits %}
+      <ul class="row-list">
+        {% for habit in habits %}
+          <li>
+            <div class="habit-text">
+              <p class="habit-name">{{ habit.name }}</p>
+              <p class="habit-meta"><span class="tag">{{ habit.category|cat_label }}</span>{{ habit.description or '' }}</p>
+            </div>
+            <div class="row-actions">
+              <a class="btn btn-outline btn-sm" href="{{ url_for('habits.edit', habit_id=habit.id) }}">Ubah</a>
+              <form method="post" action="{{ url_for('habits.archive', habit_id=habit.id) }}"
+                    data-confirm="Arsipkan “{{ habit.name }}”? Riwayatnya tetap tersimpan.">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-outline btn-sm btn-danger">Arsipkan</button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="lede">Belum ada habit aktif. Tambahkan dari <a href="{{ url_for('main.dashboard') }}">Dashboard</a>.</p>
+    {% endif %}
+
+    <div class="panel export-panel">
+      <h2>Ekspor data</h2>
+      <p>Unduh seluruh riwayat, termasuk habit yang sudah diarsipkan.</p>
+      <div class="row-actions">
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('export.export_csv') }}">Unduh CSV</a>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('export.export_json') }}">Unduh JSON</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

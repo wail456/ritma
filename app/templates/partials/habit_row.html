@@ -1,0 +1,40 @@
+{# Satu baris habit. Variabel: habit, status ('completed' | 'skipped' | None), fresh (baru dicentang). #}
+<li id="habit-{{ habit.id }}" class="habit-row{% if status %} {{ status }}{% endif %}" data-category="{{ habit.category }}" data-status="{{ status or 'pending' }}"{% if fresh %} data-fresh{% endif %}>
+  <form class="habit-toggle" method="post" action="{{ url_for('habits.log', habit_id=habit.id) }}"
+        hx-post="{{ url_for('habits.log', habit_id=habit.id) }}" hx-target="#habit-{{ habit.id }}" hx-swap="outerHTML">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <button class="check" type="submit" name="status" value="completed"
+            aria-pressed="{{ 'true' if status == 'completed' else 'false' }}"
+            aria-label="Tandai selesai: {{ habit.name }}"{% if status == 'skipped' %} disabled title="Sudah dilewati hari ini."{% endif %}>
+      {% if status == 'completed' %}
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      {% elif status == 'skipped' %}
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10"/></svg>
+      {% endif %}
+    </button>
+
+    <div class="habit-text">
+      <p class="habit-name">{{ habit.name }}</p>
+      <p class="habit-meta"><span class="tag">{{ habit.category|cat_label }}</span>{{ habit.description or '' }}</p>
+    </div>
+
+    <button class="skip" type="submit" name="status" value="skipped" aria-pressed="{{ 'true' if status == 'skipped' else 'false' }}"{% if status == 'completed' %} disabled title="Sudah selesai. Klik centang lagi untuk membatalkan."{% elif status == 'skipped' %} disabled title="Sudah dilewati hari ini."{% endif %}>
+      {{ 'Dilewati' if status == 'skipped' else 'Lewati' }}<span class="visually-hidden"> {{ habit.name }} hari ini</span>
+    </button>
+  </form>
+
+  <details class="menu menu--row">
+    <summary aria-label="Kelola {{ habit.name }}">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
+    </summary>
+    <div class="menu-pop">
+      <a href="{{ url_for('habits.edit', habit_id=habit.id) }}">Ubah</a>
+      <form method="post" action="{{ url_for('habits.archive', habit_id=habit.id) }}"
+            data-confirm="Arsipkan “{{ habit.name }}”? Riwayatnya tetap tersimpan.">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="is-danger">Arsipkan</button>
+      </form>
+    </div>
+  </details>
+</li>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Bangun kebiasaan kecil{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="container grid-hero">
+    <div class="hero-content">
+      <span class="badge-tag">Konsistensi Tanpa Beban</span>
+      <h1 class="hero-title">Bangun kebiasaan kecil, ciptakan perubahan besar.</h1>
+      <p class="hero-description">Kelola rutinitas harianmu dengan antarmuka yang tenang, bersih, dan berfokus pada progres nyata setiap hari tanpa gangguan notifikasi berlebih.</p>
+      <div class="hero-cta">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Mulai Rutinitasmu</a>
+        <a href="#fitur" class="btn btn-outline btn-lg">Pelajari Fitur</a>
+      </div>
+    </div>
+    <div class="hero-preview">
+      <div class="preview-card-stack">
+        <div class="preview-header">
+          <div>
+            <div class="preview-user">Ringkasan Konsistensi</div>
+            <div class="preview-date">Senin, 9 November 2026</div>
+          </div>
+          <span class="badge-tag" style="margin-bottom:0;">83% Selesai</span>
+        </div>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 1rem;">
+          {% for i in range(45) %}
+            <div style="width: 14px; height: 14px; border-radius: 3px; background-color: {% if i % 3 == 0 %}#2D5A27{% elif i % 2 == 0 %}#8EBF89{% else %}#EAEFE6{% endif %};"></div>
+          {% endfor %}
+        </div>
+        <div style="font-size: 0.875rem; color: var(--text-muted);">
+          ✔ 5 dari 6 kebiasaan selesai hari ini • Streak 12 hari
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fitur" class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Dirancang untuk Membantu Konsistensi Harian</h2>
+      <p>Sederhana, praktis, dan berfokus pada visualisasi progres positif kamu.</p>
+    </div>
+    <div class="grid-features">
+      <div class="feature-card">
+        <div class="icon-wrapper">🌱</div>
+        <h3>Checklist Ringkas</h3>
+        <p>Tandai status kebiasaan selesai atau dilewati langsung dari dashboard tanpa memuat ulang halaman.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-wrapper">📊</div>
+        <h3>Consistency Heatmap</h3>
+        <p>Lihat grafik jejak hijau pertumbuhan rutinitasmu layaknya kontribusi GitHub sepanjang tahun.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-wrapper">⚡</div>
+        <h3>Streak & Ringkasan</h3>
+        <p>Pantau rekor hari berturut-turut dan persentase penyelesaian 30 hari terakhir secara akurat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

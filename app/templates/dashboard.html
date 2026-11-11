@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Hari ini{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="dashboard-grid">
+    <section class="greeting">
+      <h1>{{ greeting }}, {{ current_user.username }}.</h1>
+      <p class="date">{{ data.today|long_date }}</p>
+    </section>
+
+    {% with s=data.summary %}{% include "partials/summary.html" %}{% endwith %}
+
+    <section class="habit-list-container" aria-labelledby="checklist-title">
+      <div class="card-head">
+        <h2 id="checklist-title">Habit hari ini</h2>
+        <button type="button" class="btn btn-primary btn-sm" data-dialog-open="new-habit">Tambah habit</button>
+      </div>
+
+      {% if data.habits %}
+        {% if data.categories|length > 1 %}
+          <div class="filters" role="group" aria-label="Filter kategori">
+            <button type="button" class="chip" data-filter="all" aria-pressed="true">Semua</button>
+            {% for category in data.categories %}
+              <button type="button" class="chip" data-filter="{{ category }}" aria-pressed="false">{{ category|cat_label }}</button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <ul class="habit-list" id="habit-list">
+          {% for habit in data.habits %}
+            {% with status=data.today_status.get(habit.id) %}{% include "partials/habit_row.html" %}{% endwith %}
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty">
+          <div class="empty-art" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <h3>Belum ada habit.</h3>
+          <p>Mulai dari satu hal kecil yang pasti bisa kamu lakukan tiap hari, misalnya minum air setelah bangun tidur.</p>
+          <button type="button" class="btn btn-primary" data-dialog-open="new-habit">Tambah habit pertama</button>
+        </div>
+      {% endif %}
+    </section>
+
+    {% if data.habits %}
+      {% with hm=data.heatmap %}{% include "partials/heatmap.html" %}{% endwith %}
+    {% endif %}
+  </div>
+</div>
+
+<dialog id="new-habit" aria-labelledby="new-habit-title">
+  <form method="post" action="{{ url_for('habits.create') }}" class="stack">
+    {{ habit_form.hidden_tag() }}
+    <h2 id="new-habit-title">Habit baru</h2>
+    {{ field(habit_form.name, maxlength="80", placeholder="Contoh: Jalan kaki 20 menit", autocomplete="off") }}
+    {{ field(habit_form.category) }}
+    {{ field(habit_form.description, maxlength="300", placeholder="Opsional") }}
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline" data-dialog-close>Batal</button>
+      <button type="submit" class="btn btn-primary">Tambah habit</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}

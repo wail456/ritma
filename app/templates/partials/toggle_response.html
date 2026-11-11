@@ -1,0 +1,4 @@
+{# Respons HTMX untuk satu centang: baris yang berubah (target utama) + dua bagian lain lewat out-of-band swap. #}
+{% with fresh=True %}{% include "partials/habit_row.html" %}{% endwith %}
+{% with oob=True, s=data.summary %}{% include "partials/summary.html" %}{% endwith %}
+{% with oob=True, fresh=True, hm=data.heatmap %}{% include "partials/heatmap.html" %}{% endwith %}

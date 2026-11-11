@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Buat akun{% endblock %}
+
+{% block content %}
+<div class="container"><section class="auth panel">
+  <h1>Buat akun</h1>
+  <p class="sub">Gratis. Isi nama, email, dan password.</p>
+
+  <form method="post" class="stack" novalidate>
+    {{ form.hidden_tag() }}
+    {{ field(form.username, autocomplete="nickname", autofocus=true) }}
+    {{ field(form.email, autocomplete="email", inputmode="email") }}
+    {{ field(form.password, hint="Minimal 8 karakter.", autocomplete="new-password") }}
+    {{ field(form.confirm, autocomplete="new-password") }}
+    <button class="btn btn-primary btn-block" type="submit">Buat akun</button>
+  </form>
+
+  <p class="alt">Sudah punya akun? <a href="{{ url_for('auth.login') }}">Masuk</a></p>
+</section></div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{# Kartu ringkasan. Variabel: s (Summary). `oob` dipasang saat dikirim sebagai respons HTMX. #}
+<section id="summary" class="stats-overview" aria-label="Ringkasan"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <div class="stat-card">
+    <p class="stat-label">Selesai hari ini</p>
+    <p class="stat-value"><span>{{ s.done_today }}</span><span class="of">/{{ s.total_today }}</span></p>
+    <div class="meter" role="progressbar" aria-label="Progres hari ini" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ s.progress_percent }}">
+      <span class="meter-fill" id="meter-fill" style="width: {{ s.progress_percent }}%"></span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Streak saat ini</p>
+    <p class="stat-value">
+      {% if s.current_streak %}
+        <svg class="flame" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+      {% endif %}
+      <span>{{ s.current_streak }}</span><span class="unit">hari</span>
+    </p>
+    <p class="stat-note">Terbaik {{ s.best_streak }} hari</p>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Habit aktif</p>
+    <p class="stat-value"><span>{{ s.active }}</span></p>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Selesai 30 hari</p>
+    <p class="stat-value"><span>{{ s.rate_30|pct }}</span><span class="unit">%</span></p>
+  </div>
+</section>

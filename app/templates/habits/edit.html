@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Ubah habit{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="page">
+    <a class="back" href="{{ url_for('main.dashboard') }}">&larr; Kembali ke hari ini</a>
+    <h1>Ubah habit</h1>
+    <form method="post" class="stack panel" novalidate>
+      {{ form.hidden_tag() }}
+      {{ field(form.name, maxlength="80", autofocus=true, autocomplete="off") }}
+      {{ field(form.category) }}
+      {{ field(form.description, maxlength="300") }}
+      <div class="dialog-actions">
+        <a class="btn btn-outline" href="{{ url_for('main.dashboard') }}">Batal</a>
+        <button type="submit" class="btn btn-primary">Simpan perubahan</button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
